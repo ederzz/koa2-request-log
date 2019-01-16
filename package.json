@@ -1,8 +1,8 @@
 {
-  "name": "koa-request-log",
-  "version": "1.0.0",
+  "name": "koa2-request-log",
+  "version": "0.1.2",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
@@ -15,12 +15,13 @@
   ],
   "author": "shenyiling",
   "license": "ISC",
-  "homepage": "https://github.com/shenyiling/koa-request-log/blob/master/README.md",
+  "homepage": "https://github.com/shenyiling/koa-request-log#readme",
   "devDependencies": {
     "@types/koa": "^2.0.48",
     "typescript": "^3.2.2"
   },
   "dependencies": {
     "chalk": "^2.4.2"
-  }
+  },
+  "types": "dist/index.d.ts"
 }
