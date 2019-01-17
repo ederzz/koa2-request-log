@@ -74,7 +74,9 @@ function printLog(logStr, colorWrapper) {
     if (coloredOutput) {
         console.log(colorWrapper(logStr));
     }
-    console.log(logStr);
+    else {
+        console.log(logStr);
+    }
 }
 // write log in log file
 function writeLogIntoFile(logStr, filePath) {

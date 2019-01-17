@@ -42,8 +42,9 @@ function createLoggerMiddlware(options: Options) {
 function printLog(logStr: string, colorWrapper: Chalk): void {
     if (coloredOutput) {
         console.log(colorWrapper(logStr))
-    } 
-    console.log(logStr)
+    } else {
+        console.log(logStr)
+    }
 }
 
 // write log in log file
