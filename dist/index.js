@@ -35,17 +35,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var chalk_1 = require("chalk");
 var fs = require("fs");
+var util = require("util");
+var chalk_1 = require("chalk");
 var coloredOutput = true;
 // logger generator
 function createLoggerMiddlware(options) {
-    if (options.coloredOutput) {
+    if (options && typeof options.coloredOutput === 'boolean') {
         coloredOutput = options.coloredOutput;
     }
     return function reqLogger(ctx, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var logStr, err_1;
+            var logStr, request, response, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -53,15 +54,16 @@ function createLoggerMiddlware(options) {
                         return [4 /*yield*/, next()];
                     case 1:
                         _a.sent();
-                        logStr = "req route:" + ctx.path + ",http method:" + ctx.request.method;
-                        printLog(logStr, chalk_1.default.green);
-                        if (options.logFilePath) {
+                        request = ctx.request, response = ctx.response;
+                        logStr = new Date() + "\n" + request.protocol + " " + request.method + " " + request.path + " " + response.status + "\n--\nrequest header:" + util.inspect(request.header, { compact: false, depth: 6, breakLength: 80 });
+                        printLog(logStr, chalk_1.default.hex('#090'));
+                        if (options && options.logFilePath) {
                             writeLogIntoFile(logStr, options.logFilePath);
                         }
                         return [3 /*break*/, 3];
                     case 2:
                         err_1 = _a.sent();
-                        printLog(err_1.message, chalk_1.default.red);
+                        printLog(err_1.message, chalk_1.default.hex('#f31140'));
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }

@@ -1,5 +1,6 @@
-import chalk, { Chalk } from 'chalk'
 import * as fs from 'fs'
+import * as util from 'util'
+import chalk, { Chalk } from 'chalk'
 import { Context } from 'koa'
 
 interface Next {
@@ -12,27 +13,32 @@ interface Options {
 
 let coloredOutput: boolean = true
 
+
 // logger generator
-function createLoggerMiddlware(options: Options) {
-    if (options.coloredOutput) {
+function createLoggerMiddlware(options?: Options) {
+    if (options && typeof options.coloredOutput === 'boolean') {
         coloredOutput = options.coloredOutput
     }
     return async function reqLogger(ctx: Context, next: Next) {
         let logStr: string
         try {
             await next()
-            logStr = `req route:${ctx.path},http method:${ctx.request.method}`
+            const {
+                request,
+                response
+            } = ctx
+            logStr = `${new Date()}\n${request.protocol} ${request.method} ${request.path} ${response.status}\n--\nrequest header:${util.inspect(request.header,{ compact: false, depth: 6, breakLength: 80 })}`
             printLog(
                 logStr,
-                chalk.green
+                chalk.hex('#090')
             )
-            if (options.logFilePath) {
+            if (options && options.logFilePath) {
                 writeLogIntoFile(logStr, options.logFilePath)
             }
         } catch (err) {
             printLog(
                 err.message,
-                chalk.red
+                chalk.hex('#f31140')
             )
         }
     }

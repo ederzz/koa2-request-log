@@ -6,5 +6,5 @@ interface Options {
     logFilePath?: string;
     coloredOutput?: boolean;
 }
-declare function createLoggerMiddlware(options: Options): (ctx: Context, next: Next) => Promise<void>;
+declare function createLoggerMiddlware(options?: Options): (ctx: Context, next: Next) => Promise<void>;
 export default createLoggerMiddlware;
