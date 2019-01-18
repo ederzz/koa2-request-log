@@ -1,6 +1,6 @@
 {
   "name": "koa2-request-log",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -18,10 +18,11 @@
   "homepage": "https://github.com/shenyiling/koa-request-log#readme",
   "devDependencies": {
     "@types/koa": "^2.0.48",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.4"
   },
   "dependencies": {
-    "chalk": "^2.4.2"
+    "chalk": "^2.4.2",
+    "moment": "^2.23.0"
   },
   "types": "dist/index.d.ts"
 }
