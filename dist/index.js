@@ -8,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
 const util = require("util");
 const moment = require("moment");
 const chalk_1 = require("chalk");
 let dateFormat = 'YYYY-MM-DD HH-mm-ss';
+const errorHexColor = '#f9084a'; // hex color for error log
 // logger generator
 function createLoggerMiddleware(options) {
     if (options && options.dateFormat) {
@@ -38,7 +38,8 @@ function createLoggerMiddleware(options) {
                     + '\n'
                     + '--\n'
                     + 'request header: '
-                    + util.inspect(request.header, { compact: false, depth: 6, breakLength: 80 });
+                    + util.inspect(request.header, { compact: false, depth: 6, breakLength: 80 })
+                    + '\n';
                 if (!options) {
                     // default log
                     console.log('request at: '
@@ -54,13 +55,11 @@ function createLoggerMiddleware(options) {
                     + requestAt
                     + '\n'
                     + logStr;
-                console.log(colorStr(logStr, options.logColor || null));
-                if (options.logFilePath) {
-                    writeLogIntoFile(logStr, options.logFilePath);
-                }
+                const stream = options.stream || process.stdout;
+                stream.write(colorStr(logStr, options.logColor || null));
             }
             catch (err) {
-                console.log(colorStr(err.message, '#f9084a'));
+                console.log(colorStr(err.message, errorHexColor));
             }
         });
     };
@@ -73,9 +72,5 @@ function colorStr(logStr, hexColor) {
     else {
         return logStr;
     }
-}
-// write log in log file
-function writeLogIntoFile(logStr, filePath) {
-    fs.appendFileSync(filePath, logStr);
 }
 exports.default = createLoggerMiddleware;

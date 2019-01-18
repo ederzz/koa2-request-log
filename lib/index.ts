@@ -1,7 +1,7 @@
-import * as fs from 'fs'
 import * as util from 'util'
 import * as moment from 'moment'
 import chalk from 'chalk'
+import { Writable } from 'stream'
 import { Context, Request, Response } from 'koa'
 
 /**
@@ -10,14 +10,15 @@ import { Context, Request, Response } from 'koa'
  *      3.response content length
  *      4.代码优化 && 测试文件
  *      5.格式化log输出
- *      6.定义多个log输出
  *      7.使用stream定义输出位置.
  *      8.log color提供多种定义方式
+ *      9.存储文件是否需要颜色
  */
 interface Next {
     (): Promise<any>
 }
 interface Options {
+    stream?: Writable, // TODO:
     logFilePath?: string,
     logColor?: string,
     dateFormat?: string,
@@ -25,6 +26,7 @@ interface Options {
 }
 
 let dateFormat: string = 'YYYY-MM-DD HH-mm-ss'
+const errorHexColor: string = '#f9084a' // hex color for error log
 
 
 // logger generator
@@ -57,6 +59,7 @@ function createLoggerMiddleware(options?: Options) {
                     + '--\n'
                     + 'request header: '
                     + util.inspect(request.header,{ compact: false, depth: 6, breakLength: 80 })
+                    + '\n'
             if (!options) {
                 // default log
                 console.log(
@@ -75,15 +78,11 @@ function createLoggerMiddleware(options?: Options) {
                         + '\n'
                         + logStr
             
-            console.log(
-                colorStr(logStr, options.logColor || null)
-            )
-            if (options.logFilePath) {
-                writeLogIntoFile(logStr, options.logFilePath)
-            }
+            const stream: Writable = options.stream || process.stdout
+            stream.write(colorStr(logStr, options.logColor || null))
         } catch (err) {
             console.log(
-                colorStr(err.message, '#f9084a')
+                colorStr(err.message, errorHexColor)
             )
         }
     }
@@ -96,11 +95,6 @@ function colorStr(logStr: string, hexColor: string | null): string {
     } else {
         return logStr
     }
-}
-
-// write log in log file
-function writeLogIntoFile(logStr: string, filePath: string): void {
-    fs.appendFileSync(filePath, logStr)
 }
 
 export default createLoggerMiddleware

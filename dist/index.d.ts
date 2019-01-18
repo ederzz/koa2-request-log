@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import { Writable } from 'stream';
 import { Context, Request, Response } from 'koa';
 /**
  * TODO:1.自定义moment format函数
@@ -5,14 +7,15 @@ import { Context, Request, Response } from 'koa';
  *      3.response content length
  *      4.代码优化 && 测试文件
  *      5.格式化log输出
- *      6.定义多个log输出
  *      7.使用stream定义输出位置.
  *      8.log color提供多种定义方式
+ *      9.存储文件是否需要颜色
  */
 interface Next {
     (): Promise<any>;
 }
 interface Options {
+    stream?: Writable;
     logFilePath?: string;
     logColor?: string;
     dateFormat?: string;
