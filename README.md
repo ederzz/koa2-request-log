@@ -18,7 +18,7 @@ app.use(logger()) // default setting
 app.use(logger({
     logColor: '#000',
     dateFormat: 'YYYY-MM-DD',
-    stream: process.stdout, // log at console or you can write to file
+    stream: process.stdout, // log at console or you can write to a file
     skip(req, res) {
         return res.status >= 400
     }
@@ -31,7 +31,7 @@ app.listen(3000, () => {
 Javascript:
 ```Javascript
 const Koa = require('koa')
-const logger = require('koa2-request-log').default
+const logger = require('koa2-request-log')
 
 const app = new Koa()
 

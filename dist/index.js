@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const util = require("util");
 const moment = require("moment");
 const chalk_1 = require("chalk");
@@ -79,4 +78,4 @@ function colorStr(logStr, logColor) {
     }
     return logColor(logStr);
 }
-exports.default = createLoggerMiddleware;
+module.exports = createLoggerMiddleware;
