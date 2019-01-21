@@ -18,7 +18,6 @@ interface Next {
 }
 interface Options {
     stream?: Writable, // TODO:
-    logFilePath?: string,
     logColor?: LogColor,
     dateFormat?: string,
     skip?: (req: Request, res: Response) => boolean
