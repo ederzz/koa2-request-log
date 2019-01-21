@@ -19,4 +19,4 @@ interface Options {
     skip?: (req: Request, res: Response) => boolean;
 }
 declare function createLoggerMiddleware(options?: Options): (ctx: Context, next: Next) => Promise<null | undefined>;
-export = createLoggerMiddleware;
+export default createLoggerMiddleware;

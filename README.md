@@ -31,7 +31,7 @@ app.listen(3000, () => {
 Javascript:
 ```Javascript
 const Koa = require('koa')
-const logger = require('koa2-request-log')
+const logger = require('koa2-request-log').default
 
 const app = new Koa()
 

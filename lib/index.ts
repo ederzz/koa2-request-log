@@ -103,4 +103,4 @@ function colorStr(logStr: string, logColor: LogColor | null): string {
     return logColor(logStr)
 }
 
-export = createLoggerMiddleware
+export default createLoggerMiddleware
