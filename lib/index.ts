@@ -1,33 +1,31 @@
 import * as util from 'util'
 import * as moment from 'moment'
-import chalk from 'chalk'
+import chalk, { Chalk } from 'chalk'
 import { Writable } from 'stream'
 import { Context, Request, Response } from 'koa'
 
 /**
  * TODO:1.自定义moment format函数
- *      2.响应时间
  *      3.response content length
  *      4.代码优化 && 测试文件
  *      5.格式化log输出
- *      7.使用stream定义输出位置.
- *      8.log color提供多种定义方式
- *      9.存储文件是否需要颜色
  */
+
+type LogColor = string | Chalk
+
 interface Next {
     (): Promise<any>
 }
 interface Options {
     stream?: Writable, // TODO:
     logFilePath?: string,
-    logColor?: string,
+    logColor?: LogColor,
     dateFormat?: string,
     skip?: (req: Request, res: Response) => boolean
 }
 
 let dateFormat: string = 'YYYY-MM-DD HH-mm-ss'
 const errorHexColor: string = '#f9084a' // hex color for error log
-
 
 // logger generator
 function createLoggerMiddleware(options?: Options) {
@@ -37,6 +35,7 @@ function createLoggerMiddleware(options?: Options) {
     return async function reqLogger(ctx: Context, next: Next) {
         let logStr: string
         let requestAt: string = moment().format(dateFormat)
+        const start = process.hrtime()
 
         try {
             await next()
@@ -49,12 +48,14 @@ function createLoggerMiddleware(options?: Options) {
                 // skip this request
                 return null
             }
+            const delta = process.hrtime(start)
             logStr = request.protocol 
                     + ' '
                     + ctx.req.httpVersion + ' '
                     + request.method + ' '
                     + request.path + ' '
                     + response.status
+                    + Math.round(delta[0] * 1000 + delta[1] / 1000000) + ' ms'
                     + '\n'
                     + '--\n'
                     + 'request header: '
@@ -79,7 +80,11 @@ function createLoggerMiddleware(options?: Options) {
                         + logStr
             
             const stream: Writable = options.stream || process.stdout
-            stream.write(colorStr(logStr, options.logColor || null))
+            stream.write(
+                stream === process.stdout 
+                    ? colorStr(logStr, options.logColor || null)
+                    : logStr
+            )
         } catch (err) {
             console.log(
                 colorStr(err.message, errorHexColor)
@@ -89,12 +94,14 @@ function createLoggerMiddleware(options?: Options) {
 }
 
 // colored log
-function colorStr(logStr: string, hexColor: string | null): string {
-    if (hexColor) {
-        return chalk.hex(hexColor)(logStr)
-    } else {
+function colorStr(logStr: string, logColor: LogColor | null): string {
+    if (logColor === null) {
         return logStr
     }
+    if (typeof logColor === 'string') {
+        return chalk.hex(logColor)(logStr)
+    }
+    return logColor(logStr)
 }
 
 export default createLoggerMiddleware

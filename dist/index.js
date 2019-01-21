@@ -22,6 +22,7 @@ function createLoggerMiddleware(options) {
         return __awaiter(this, void 0, void 0, function* () {
             let logStr;
             let requestAt = moment().format(dateFormat);
+            const start = process.hrtime();
             try {
                 yield next();
                 const { request, response } = ctx;
@@ -29,12 +30,14 @@ function createLoggerMiddleware(options) {
                     // skip this request
                     return null;
                 }
+                const delta = process.hrtime(start);
                 logStr = request.protocol
                     + ' '
                     + ctx.req.httpVersion + ' '
                     + request.method + ' '
                     + request.path + ' '
                     + response.status
+                    + Math.round(delta[0] * 1000 + delta[1] / 1000000) + ' ms'
                     + '\n'
                     + '--\n'
                     + 'request header: '
@@ -56,7 +59,9 @@ function createLoggerMiddleware(options) {
                     + '\n'
                     + logStr;
                 const stream = options.stream || process.stdout;
-                stream.write(colorStr(logStr, options.logColor || null));
+                stream.write(stream === process.stdout
+                    ? colorStr(logStr, options.logColor || null)
+                    : logStr);
             }
             catch (err) {
                 console.log(colorStr(err.message, errorHexColor));
@@ -65,12 +70,13 @@ function createLoggerMiddleware(options) {
     };
 }
 // colored log
-function colorStr(logStr, hexColor) {
-    if (hexColor) {
-        return chalk_1.default.hex(hexColor)(logStr);
-    }
-    else {
+function colorStr(logStr, logColor) {
+    if (logColor === null) {
         return logStr;
     }
+    if (typeof logColor === 'string') {
+        return chalk_1.default.hex(logColor)(logStr);
+    }
+    return logColor(logStr);
 }
 exports.default = createLoggerMiddleware;
