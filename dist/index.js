@@ -36,8 +36,8 @@ function createLoggerMiddleware(options) {
                     + ctx.req.httpVersion + ' '
                     + request.method + ' '
                     + request.path + ' '
-                    + response.status
-                    + Math.round(delta[0] * 1000 + delta[1] / 1000000) + ' ms'
+                    + response.status + ' '
+                    + Math.round(delta[0] * 1000 + delta[1] / 1000000) + 'ms'
                     + '\n'
                     + '--\n'
                     + 'request header: '
@@ -45,7 +45,7 @@ function createLoggerMiddleware(options) {
                     + '\n';
                 if (!options) {
                     // default log
-                    console.log('request at: '
+                    process.stdout.write('request at: '
                         + requestAt
                         + '\n'
                         + logStr);
@@ -64,7 +64,7 @@ function createLoggerMiddleware(options) {
                     : logStr);
             }
             catch (err) {
-                console.log(colorStr(err.message, errorHexColor));
+                process.stdout.write(colorStr(err.message, errorHexColor));
             }
         });
     };

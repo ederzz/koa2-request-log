@@ -1,10 +1,10 @@
 {
   "name": "koa2-request-log",
   "version": "0.1.16",
-  "description": "",
+  "description": "A koa middleware for logging http requests.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "build": "tsc"
   },
   "keywords": [
@@ -18,6 +18,11 @@
   "homepage": "https://github.com/shenyiling/koa-request-log#readme",
   "devDependencies": {
     "@types/koa": "^2.0.48",
+    "koa": "^2.6.2",
+    "koa-router": "^7.4.0",
+    "mocha": "^5.2.0",
+    "sinon": "^7.2.3",
+    "supertest": "^3.4.1",
     "typescript": "^3.2.4"
   },
   "dependencies": {

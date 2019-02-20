@@ -1,5 +1,5 @@
 # koa2-request-log
-a koa middleware for logging requests.
+A koa middleware for logging http requests.
 
 ## Install
 ```console
