@@ -12,11 +12,18 @@ declare type LogColor = string | Chalk;
 interface Next {
     (): Promise<any>;
 }
-interface Options {
+interface Opts {
     stream?: Writable;
     logColor?: LogColor;
-    dateFormat?: string;
     skip?: (req: Request, res: Response) => boolean;
+    logFmt?: string;
 }
-declare function createLoggerMiddleware(options?: Options): (ctx: Context, next: Next) => Promise<null | undefined>;
-export default createLoggerMiddleware;
+declare class Logger {
+    fields: any;
+    private defaultLog;
+    constructor();
+    private setField;
+    private format;
+    generate(opts: Opts): (ctx: Context, next: Next) => void;
+}
+export default Logger;
