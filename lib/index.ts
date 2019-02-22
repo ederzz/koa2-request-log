@@ -6,7 +6,7 @@ import { Context, Request, Response } from 'koa'
 type LogColor = string | Chalk
 type HttpFieldGetter = (ctx: Context) => any 
 type HttpHeaderGetter = (ctx: Context, field: string) => any
-type DefaultLogFunc = (fields: HttpFields, ctx: Context) => any
+type DefaultLogFunc = (fields: HttpFields, ctx: Context) => string
 
 interface Next {
     (): Promise<any>
@@ -17,10 +17,14 @@ interface Opts {
     logFmt?: string
     skip?: (req: Request, res: Response) => boolean,
 }
-// TODO: 使用规范化，定义format输出时间，测试文件，代码优化，添加example，修改README添加内容
+// TODO: 定义format输出时间，测试文件，添加example
 
 interface HttpFields {
     [key: string]: HttpFieldGetter | HttpHeaderGetter
+}
+
+function defaultSkip() {
+    return false
 }
 
 class Logger {
@@ -86,21 +90,31 @@ class Logger {
     }
 
     // create a log middleware
-    public generate(opts: Opts) {
-        const stream: Writable = opts.stream || process.stdout
-        const formatLog = opts.logFmt
-                            ? this.format(opts.logFmt)
-                            : this.defaultLog
+    public generate(opts?: Opts) {
+        const stream: Writable = opts 
+                                && opts.stream 
+                                && opts.stream 
+                                || process.stdout
+        const formatLog = opts
+                            && opts.logFmt
+                            && this.format(opts.logFmt)
+                            || this.defaultLog
+        const skip = opts
+                    && opts.skip
+                    || defaultSkip
 
         return async (ctx: Context, next: Next) => {
             const start = process.hrtime()
             await next()
+            if (skip(ctx.request, ctx.response)) {
+                return null
+            }
             const delta = process.hrtime(start)
             ctx.set('response-time', Math.round(delta[0] * 1000 + delta[1] / 1000000) + 'ms')
 
             const log = formatLog(this.fields, ctx)
             stream.write(
-                this.colorStr(log + '\n', opts.logColor)
+                this.colorStr(log + '\n', opts && opts.logColor)
             )
         }
     }

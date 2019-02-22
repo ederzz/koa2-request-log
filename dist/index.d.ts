@@ -24,6 +24,6 @@ declare class Logger {
     private setField;
     private format;
     private colorStr;
-    generate(opts: Opts): (ctx: Context, next: Next) => Promise<void>;
+    generate(opts?: Opts): (ctx: Context, next: Next) => Promise<null | undefined>;
 }
 export default Logger;

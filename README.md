@@ -10,19 +10,21 @@ $ npm install koa2-request-log --save
 Typescript:
 ```Typescript
 import * as Koa from 'koa'
-import logger from 'koa2-request-log'
+import Logger from 'koa2-request-log'
 
 const app = new Koa()
-
-app.use(logger()) // default setting
-app.use(logger({
+const logger = (new Logger()).generate() // default setting
+const loggerWithOpts = (new Logger()).generate({
     logColor: '#000',
-    dateFormat: 'YYYY-MM-DD',
     stream: process.stdout, // log at console or you can write to a file
+    logFmt: ':method :path :status',
     skip(req, res) {
         return res.status >= 400
     }
-})) // could use multiple logger
+})
+
+app.use(logger) 
+app.use(loggerWithOpts) // could use multiple logger
 
 app.listen(3000, () => {
     console.log('app start')
@@ -31,11 +33,20 @@ app.listen(3000, () => {
 Javascript:
 ```Javascript
 const Koa = require('koa')
-const logger = require('koa2-request-log').default
+const Logger = require('koa2-request-log').default
 
 const app = new Koa()
-
-app.use(logger())
+const logger = (new Logger()).generate() 
+const loggerWithOpts = (new Logger()).generate({
+    logColor: '#000',
+    stream: process.stdout,
+    logFmt: ':method :path :status',
+    skip(req, res) {
+        return res.status >= 400
+    }
+})
+app.use(logger)
+app.use(loggerWithOpts)
 
 app.listen(3000, () => {
     console.log('app start')
@@ -45,9 +56,6 @@ app.listen(3000, () => {
 ## Options param
 ### logColor
 Define the log color when you output the log to the console via the hex string(`eg.#000`) or chalk wrapper(`chalk.rgb(0, 0, 0)`).
-
-### dateFormat
-Define the request time format using [momentjs's format](https://momentjs.com/docs/#/parsing/string-format/).
 
 ### stream
 Using `node stream` to define the log output location.e.g.`process.stdout`.
@@ -65,3 +73,33 @@ app.use(logger({
 
 ### skip
 Function to determine if log is skipped,defaults to false.The function could get the koa request object and koa response object as params: `skip(req, res)`.
+
+### logFmt
+You can customize the log output format.Like:`:method --> :path`,then the `:method` and `:path` will be replaced.
+
+#### :protocol
+The Http protocol of the request.
+
+#### :http-version
+The Http version of the request.
+
+#### :method
+The Http method of the request.
+
+#### :path
+The Http path of the request.
+
+#### :status
+The Http status of response.
+
+#### :response-time
+The Http response time of response.
+
+#### :request-at
+Request initiation time.
+
+#### :req
+Get Http request header.
+
+#### :res
+Get Http response header.

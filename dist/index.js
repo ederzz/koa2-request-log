@@ -10,6 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
 const chalk_1 = require("chalk");
+function defaultSkip() {
+    return false;
+}
 class Logger {
     constructor() {
         this.fields = {};
@@ -67,17 +70,27 @@ class Logger {
     }
     // create a log middleware
     generate(opts) {
-        const stream = opts.stream || process.stdout;
-        const formatLog = opts.logFmt
-            ? this.format(opts.logFmt)
-            : this.defaultLog;
+        const stream = opts
+            && opts.stream
+            && opts.stream
+            || process.stdout;
+        const formatLog = opts
+            && opts.logFmt
+            && this.format(opts.logFmt)
+            || this.defaultLog;
+        const skip = opts
+            && opts.skip
+            || defaultSkip;
         return (ctx, next) => __awaiter(this, void 0, void 0, function* () {
             const start = process.hrtime();
             yield next();
+            if (skip(ctx.request, ctx.response)) {
+                return null;
+            }
             const delta = process.hrtime(start);
             ctx.set('response-time', Math.round(delta[0] * 1000 + delta[1] / 1000000) + 'ms');
             const log = formatLog(this.fields, ctx);
-            stream.write(this.colorStr(log + '\n', opts.logColor));
+            stream.write(this.colorStr(log + '\n', opts && opts.logColor));
         });
     }
 }
