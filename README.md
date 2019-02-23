@@ -21,10 +21,10 @@ const loggerWithOpts = (new Logger()).generate({
     skip(req, res) {
         return res.status >= 400
     }
-})
+}) // log with some options
 
 app.use(logger) 
-app.use(loggerWithOpts) // could use multiple logger
+app.use(loggerWithOpts) // could use multiple loggers
 
 app.listen(3000, () => {
     console.log('app start')
@@ -55,10 +55,10 @@ app.listen(3000, () => {
 
 ## Options param
 ### logColor
-Define the log color when you output the log to the console via the hex string(`eg.#000`) or chalk wrapper(`chalk.rgb(0, 0, 0)`).
+Define the log color via the hex string(`eg.#000`) or chalk wrapper(`chalk.rgb(0, 0, 0)`).
 
 ### stream
-Using `node stream` to define the log output location.e.g.`process.stdout`.
+Using `node writable stream` to define the log output location.e.g.`process.stdout`.  
 Output the log to a file:
 ```Javascript
 const fs = require('fs')
@@ -75,31 +75,32 @@ app.use(logger({
 Function to determine if log is skipped,defaults to false.The function could get the koa request object and koa response object as params: `skip(req, res)`.
 
 ### logFmt
-You can customize the log output format.Like:`:method --> :path`,then the `:method` and `:path` will be replaced.
+Customize the log output format.For example:`:method --> :path`.
 
+## logFmt fields
 #### :protocol
-The Http protocol of the request.
+The protocol of the request.`e.g.http`.
 
 #### :http-version
-The Http version of the request.
+Http version of the request.`e.g.1.1`.
 
 #### :method
-The Http method of the request.
+Http method of the request.`e.g.GET`.
 
 #### :path
-The Http path of the request.
+Http path of the request.`e.g./user`.
 
 #### :status
-The Http status of response.
+Http status of response.`e.g.200`.
 
 #### :response-time
-The Http response time of response.
+Http response time of response.`e.g.200ms`.
 
 #### :request-at
-Request initiation time.
+Request initiation time.`e.g.Sat Feb 23 2019 11:57:30 GMT+0800`.
 
-#### :req
-Get Http request header.
+#### :req[header]
+Get Http request header.e.g.`:req[host]` --> localhost:3002.
 
-#### :res
-Get Http response header.
+#### :res[header]
+Get Http response header.e.g.`:res[content-length]` --> 4.

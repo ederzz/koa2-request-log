@@ -1,6 +1,6 @@
 {
   "name": "koa2-request-log",
-  "version": "0.1.16",
+  "version": "1.0.1",
   "description": "A koa middleware for logging http requests.",
   "main": "dist/index.js",
   "scripts": {
