@@ -2,6 +2,7 @@ const request = require('supertest')
 const assert = require('assert')
 const sinon = require('sinon')
 const fs = require('fs')
+const split = require('split')
 
 let app, log
 const stream = fs.createWriteStream('app.log', {
@@ -9,62 +10,47 @@ const stream = fs.createWriteStream('app.log', {
 })
 
 describe('koa2-request-log', () => {
-    describe('log at console', () => {
-        before(() => {
-            app = require('../test-server')({
-                logColor: '#ff0',
-                dateFormat: 'YYYY-MM-DD',
-                skip(req, res) {
-                    return res.status >= 400
+    describe('log with options', () => {
+        it('log with color: #ff0', function (done) {
+            const cb = after(2, function (err, line) {
+                if (err) {
+                    done(err)
+                    return 
                 }
+                // TODO:检验错误
+                // assert(/\\u001b\[38;2;255;255;0m  \\u001b\[39m/.test(line))
+                done()
             })
-        })
-        beforeEach(() => {
-            log = sinon.stub(process.stdout, 'write')
-        })
-        afterEach(() => {
-            log.restore()
-        })
-
-        it('should log at console', function (done) {
-            request(app.listen())
-                .get('/normal')
-                .expect(200, 'request normal', () => {
-                    assert(log.calledOnce, 'console log is not called.')
-                    done()
-                })
-        })
-
-        it('should skip this log', function(done) {
-            request(app.listen())
-                .get('/client-error')
-                .expect(400, 'client error', () => {
-                    assert(log.notCalled, 'console log should not be called.')
-                    done()
-                })
-        })
-    })
-
-    describe('write log to file', () => {
-        before(() => {
+            const stream = createLineStream((line) => {
+                // 校验
+                cb(null, line)
+            })
             app = require('../test-server')({
-                stream
+                stream,
+                logColor: 'ff0'
             })
-        })
-        beforeEach(() => {
-            log = sinon.stub(stream, 'write')
-        })
-        afterEach(() => {
-            log.restore()
-        })
-
-        it('should write log to file', function (done) {
             request(app.listen())
                 .get('/normal')
-                .expect(200, 'request normal', () => {
-                    assert(log.calledOnce, 'stream\'s write function is not called.')
-                    done()
-                })
+                .expect(200, cb)
         })
     })
 })
+
+function createLineStream (callback) {
+    return split().on('data', callback)
+}
+
+function after (count, callback) {
+    let i = 0
+    let args = new Array(2)
+
+    return function (err, log) {
+        i++
+        args[0] = args[0] || err
+        args[1] = args[1] || log
+
+        if (count === i) {
+            callback.apply(null, args)
+        }
+    }
+}

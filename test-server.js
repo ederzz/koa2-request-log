@@ -1,6 +1,6 @@
 const Koa = require('koa')
 const router = require('koa-router')()
-const logger = require('./dist/index').default
+const Logger = require('./dist/index').default
 
 router
 .get('/normal', (ctx) => {
@@ -16,9 +16,10 @@ router
 })
 
 // return koa server for test
-module.exports = function (ops) {
+module.exports = function (opts) {
     const app = new Koa()
-    app.use(logger(ops))
+    const logger = (new Logger()).generate(opts)
+    app.use(logger)
     app.use(router.routes())
 
     return app
