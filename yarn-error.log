@@ -1,25 +1,25 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add split -D
+  /usr/local/bin/node /usr/local/bin/yarn
 
 PATH: 
-  /Users/shenyiling/shell_dir:/Users/shenyiling/mongodb/mongodb-osx-x86_64-4.0.5/bin:/usr/local/mysql/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/mysql/bin
 
 Yarn version: 
   1.13.0
 
 Node version: 
-  10.15.0
+  10.15.1
 
 Platform: 
   darwin x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/Users/shenyiling/gitPro/koa-request-log/node_modules/@types/accepts/README.md'
+  Error: EACCES: permission denied, mkdir '/Users/shenyiling/git_pro/koa2-request-log/node_modules/@sinonjs/text-encoding'
 
 npm manifest: 
   {
     "name": "koa2-request-log",
-    "version": "0.1.16",
+    "version": "1.0.1",
     "description": "A koa middleware for logging http requests.",
     "main": "dist/index.js",
     "scripts": {
@@ -41,6 +41,7 @@ npm manifest:
       "koa-router": "^7.4.0",
       "mocha": "^5.2.0",
       "sinon": "^7.2.3",
+      "split": "^1.0.1",
       "supertest": "^3.4.1",
       "typescript": "^3.2.4"
     },
