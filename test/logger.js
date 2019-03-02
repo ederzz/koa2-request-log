@@ -53,7 +53,7 @@ describe('koa2-request-log', () => {
             const stream = createTestStream(line => {
                 assert(false, 'should not log')
             })
-            app = require('../test-server')({
+            app = createTestServer({
                 stream,
                 skip(_, res) {
                     if (res.status >= 400) {
