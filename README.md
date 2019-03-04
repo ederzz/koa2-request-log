@@ -1,4 +1,4 @@
-# koa2-request-log
+# koa2-request-log [![TypeScript](https://badges.frapsoft.com/typescript/love/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/) [![npm version](https://img.shields.io/badge/npm-v1.0.1-brightgreen.svg)](https://www.npmjs.com/package/koa2-request-log)
 A koa middleware for logging http requests.
 
 ## Install
