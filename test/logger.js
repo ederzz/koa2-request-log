@@ -15,6 +15,7 @@ describe('koa2-request-log', () => {
                     done(err)
                     return 
                 }
+                assert(/\s\[38;2;255;255;0m.*\s\[39m/.test(JSON.stringify(line)))
                 assert(/\u001b\[38;2;255;255;0m.*\u001b\[39m/.test(line))
                 done()
             })
